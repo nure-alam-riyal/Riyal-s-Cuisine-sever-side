@@ -42,6 +42,26 @@ async function run() {
       const result=await foodsCollection.findOne(query)
       res.send(result)
      })
+
+     app.get('/foods/:email',async (req,res) => {
+      const email=req.params.email
+      const filter={
+        ownerEmail:email
+      }
+      const result=await foodsCollection.find(filter).toArray()
+      res.send(result)
+     })
+     app.get('/puchaseFoods/:email',async (req,res) => {
+      const email=req.params.email
+      const filter={
+        buyerEmail:email
+      }
+      const result=await purchasedFoodsCollection.find(filter).toArray()
+      res.send(result)
+     })
+
+
+
     app.post('/add-food',async (req,res) => {
         const foods=req.body
         const result=await foodsCollection.insertOne(foods)
@@ -50,8 +70,54 @@ async function run() {
     })
     app.post('/purchased-foods',async (req,res) => {
       const purchasedFoods=req.body
-      console.log(purchasedFoods)
+      console.log(purchasedFoods.foods_id)
+      // console.log(purchasedFoods)
       const result=await purchasedFoodsCollection.insertOne(purchasedFoods)
+      res.send(result)
+
+      const query={_id: new ObjectId(purchasedFoods.foods_id)}
+      const options = { upsert: true };
+      const updateCount={
+      $inc:{
+        purchaseCount:1
+      }
+      }
+      // 
+ const updateCountBy1=await foodsCollection.updateOne(query,updateCount,options)
+
+    })
+    app.put('/update/:id',async (req,res) => {
+      const id=req.params.id
+      const data=req.body
+      const filter={
+        _id:new ObjectId(id)
+      }
+    const  updateData={
+      $set:{
+        description:data.description,
+        Price:data.Price,
+        foodQuantity:data.foodQuantity,
+        foodOrigin:data.foodOrigin,
+        foodPhoto:data.foodPhoto,
+        foodName:data.foodName,
+        foodCategory:data.foodName,
+        purchaseCount:data.purchaseCount,
+      }
+    }
+
+    const options={
+      upsert:true
+    }
+      const result=await foodsCollection.updateOne(filter,updateData,options)
+      res.send(result)
+    })
+    app.delete('/purchaseFood/:id',async (req,res) => {
+      const id=req.params.id
+      const query={
+        _id:new ObjectId(id)
+      
+      }
+      const result=await purchasedFoodsCollection.deleteOne(query)
       res.send(result)
     })
     // Connect the client to the server	(optional starting in v4.7)
