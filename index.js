@@ -31,18 +31,23 @@ async function run() {
       const result=await foodsCollection.find().sort(sort).limit(6).toArray()
       res.send(result)
     })
-    app.get('/allfoods',async (req,res) => {
-      const sort = { purchaseCount: -1 };
-      const result=await foodsCollection.find().toArray()
+    app.get('/allfoods',async(req,res) => {
+      const {name}=req.query
+      let fiter={}
+      if(name){
+        fiter={foodName:{ $regex:name,$options:'i'} }
+      }
+      const result= await foodsCollection.find(fiter).toArray()
       res.send(result)
+
     })
      app.get('/food/:id',async (req,res) => {
       const id=req.params.id
       const query={_id:new ObjectId(id)}
       const result=await foodsCollection.findOne(query)
       res.send(result)
-     })
-
+     
+    })
      app.get('/foods/:email',async (req,res) => {
       const email=req.params.email
       const filter={
@@ -82,7 +87,7 @@ async function run() {
         purchaseCount:1
       }
       }
-      // 
+      
  const updateCountBy1=await foodsCollection.updateOne(query,updateCount,options)
 
     })
