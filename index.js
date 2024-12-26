@@ -128,11 +128,10 @@ async function run() {
       const query = { _id: new ObjectId(purchasedFoods.foods_id) }
       const options = { upsert: true };
       const updateCount = {
-        $inc: {
-          purchaseCount: 1
-        },
+       
         $inc:{
-             foodQuantity:-purchasedFoods?.quantity
+              purchaseCount: 1,
+              foodQuantity:-purchasedFoods?.quantity
         }
       }
 
