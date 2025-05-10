@@ -44,7 +44,8 @@ const client = new MongoClient(uri, {
   }
 });
 
-// console.log(process.env.TOKEN)
+console.log(process.env.TOKEN)
+
 async function run() {
   try {
     const foodsCollection = client.db('resturant').collection('foods')
@@ -69,16 +70,29 @@ async function run() {
       const result = await foodsCollection.find().sort(sort).limit(6).toArray()
       res.send(result)
     })
+    // app.get('/allfoods', async (req, res) => {
+    //   const { name,best,max,low,high } = req.query
+    //   let fiter = {}
+    //   if (name) {
+    //     fiter = { foodName: { $regex: name, $options: 'i' } }
+    //   }
+    //   const result = await foodsCollection.find(fiter).toArray()
+    //   res.send(result)
+
+    // })
     app.get('/allfoods', async (req, res) => {
-      const { name } = req.query
+      const { name,best,max,high} = req.query
+      console.log(req?.query)
       let fiter = {}
       if (name) {
         fiter = { foodName: { $regex: name, $options: 'i' } }
       }
+      console.log(name,max,best,high)
       const result = await foodsCollection.find(fiter).toArray()
       res.send(result)
 
     })
+
     app.get('/food/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
