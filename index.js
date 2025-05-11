@@ -9,14 +9,17 @@ const app = express()
 // fYwV0dAYU9VHOZaX
 // resturant-management
 
+
 app.use(express.json())
 app.use(cors({
   origin:['http://localhost:5173',
-          'https://resturant-management-106b2.web.app'
+          'https://riyal-s-cuisine-client-side.vercel.app/'
   ],
   credentials:true
 }))
 app.use(cookieParser())
+
+
 
 
 const varifyToken=(req,res,next)=>{
@@ -107,6 +110,7 @@ result = await foodsCollection.find(fiter).toArray();
       }
       console.log(result);
       res.send(result);
+
 
     })
 
