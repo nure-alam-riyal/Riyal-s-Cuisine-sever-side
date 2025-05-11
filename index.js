@@ -47,7 +47,7 @@ const client = new MongoClient(uri, {
   }
 });
 
-console.log(process.env.TOKEN)
+// console.log(process.env.TOKEN)
 
 async function run() {
   try {
@@ -87,7 +87,7 @@ async function run() {
       const { name,best,max,high} = req.query
     
       let fiter = {}
-      console.log(req.query)
+      // console.log(req.query)
       let result=0;
       if(high && max && best)
         result=await foodsCollection.find(fiter).sort({Price:parseInt(high),purchaseCount:-1,foodQuantity:-1}).toArray()
@@ -108,7 +108,7 @@ result = await foodsCollection.find(fiter).toArray();
       else{
       result=  await foodsCollection.find(fiter).toArray();
       }
-      console.log(result);
+      // console.log(result);
       res.send(result);
 
 
