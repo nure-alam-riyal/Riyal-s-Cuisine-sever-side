@@ -82,14 +82,31 @@ async function run() {
     // })
     app.get('/allfoods', async (req, res) => {
       const { name,best,max,high} = req.query
-      console.log(req?.query)
+    
       let fiter = {}
-      if (name) {
-        fiter = { foodName: { $regex: name, $options: 'i' } }
+      console.log(req.query)
+      let result=0;
+      if(high && max && best)
+        result=await foodsCollection.find(fiter).sort({Price:parseInt(high),purchaseCount:-1,foodQuantity:-1}).toArray()
+    else if(high && best)
+       result=await foodsCollection.find(fiter).sort({Price:parseInt(high),purchaseCount:-1}).toArray()
+    else if(high && max)
+       result=await foodsCollection.find(fiter).sort({Price:parseInt(high),foodQuantity:-1}).toArray()
+    else if(high )
+       result=await foodsCollection.find(fiter).sort({Price:parseInt(high)}).toArray()
+    else if(max)
+       result=await foodsCollection.find(fiter).sort({foodQuantity:-1}).toArray()
+    else if(max)
+       result=await foodsCollection.find(fiter).sort({purchaseCount:-1}).toArray()
+      else if(name){
+fiter = { foodName: { $regex: name, $options: 'i' } }
+result = await foodsCollection.find(fiter).toArray();
       }
-      console.log(name,max,best,high)
-      const result = await foodsCollection.find(fiter).toArray()
-      res.send(result)
+      else{
+      result=  await foodsCollection.find(fiter).toArray();
+      }
+      console.log(result);
+      res.send(result);
 
     })
 
